@@ -172,6 +172,29 @@ def click_validate_input(text):
         else:
             messagebox.showwarning('錯誤', '時間必須為數字',parent=window)
         return False
+
+# 顯示幫助資訊
+def show_help():
+    window2 = tk.Tk()
+    window2.title('幫助')
+    window2.resizable(False, False)
+    window2.geometry('450x580+600+0')
+    help_info = ""
+    line = "------------------------------------------------------------------------"
+    with open('./data/function.json', 'rb') as file:
+        help_data = json.load(file)
+        for func in help_data:
+            help_info += "\n" + func + "\n{}\n".format(line)
+            account_data = help_data[func]
+            for key, value in account_data.items():
+                help_info += key + "-> " + value + "\n\n"
+            help_info += "\n"
+
+    std_ID_label = tk.Label(window2, text=help_info, anchor=tk.W, justify=tk.LEFT, wraplength=400)
+    std_ID_label.pack()
+
+    window2.mainloop()
+    
     
 
 # 主程式
@@ -192,7 +215,7 @@ if __name__ == '__main__':
     paddingy = 5
 
     # 建立學號密碼設定
-    account_label = tk.LabelFrame(window, text='帳號密碼設定', padx=15, pady=15)
+    account_label = tk.LabelFrame(window, text='學號密碼設定', padx=15, pady=15)
     account_label.grid(column=0, row=0, columnspan=3, ipadx=5, ipady=5, padx=paddingx, pady=(18, 5))
 
     # 學號欄位
@@ -220,7 +243,7 @@ if __name__ == '__main__':
     submit.grid(column=0, row=2, sticky="nsew", padx=(paddingx, 20), pady=5)
 
     # Help
-    help_btn = tk.Button(window, text="Help ? >>", width=10, height=2, command=show_password)
+    help_btn = tk.Button(window, text="Help ? >>", width=10, height=2, command=show_help)
     help_btn.grid(column=1, row=2, sticky="nsew", padx=(0, paddingx), pady=5)
 
     # 查看帳號密碼按鈕
@@ -237,7 +260,7 @@ if __name__ == '__main__':
     validation = window.register(course_validate_input)
 
     # 輸入所選課程
-    course_label = tk.LabelFrame(window, text='輸入預搶課程代碼', padx=15, pady=15)
+    course_label = tk.LabelFrame(window, text='輸入欲搶課程代碼', padx=15, pady=15)
     course_label.grid(column=0, row=4, columnspan=3, ipadx=5, ipady=5, padx=paddingx, pady=(18, 5))
 
     # 課程一
@@ -264,22 +287,21 @@ if __name__ == '__main__':
     course4_label.grid(column=3, row=2, sticky="nsew", pady=5)
     course4.grid(column=4, row=2, sticky="nsew", pady=5)
 
+    # 清除空格代碼
+    clear_course_info = tk.Button(window, text="清除空格代碼", width=10, height=2, command=clear_course_info)
+    clear_course_info.grid(column=0, row=5, sticky="nsew", padx=(paddingx, 20), pady=5)
+
+    # 清除已設定課程代碼
+    clear_course_list = tk.Button(window, text="清除已設定課程代碼", width=10, height=2, command=clear_course_list)
+    clear_course_list.grid(column=1, row=5, sticky="nsew", padx=(0, paddingx), pady=5)
+
     # 送出課程代碼
     submit_course = tk.Button(window, text="送出課程代碼", width=10, height=2, command=update_course)
-    submit_course.grid(column=0, row=5, sticky="nsew", padx=(paddingx, 20), pady=5)
+    submit_course.grid(column=0, row=6, sticky="nsew", padx=(paddingx, 20), pady=5)
 
     # 顯示已設定課程代碼
     show_course_info = tk.Button(window, text="顯示已設定課程代碼", width=10, height=2, command=show_course_info)
-    show_course_info.grid(column=1, row=5, sticky="nsew", padx=(0, paddingx), pady=5)
-
-    # 清除空格代碼
-    submit_course = tk.Button(window, text="清除空格代碼", width=10, height=2, command=clear_course_info)
-    submit_course.grid(column=0, row=6, sticky="nsew", padx=(paddingx, 20), pady=5)
-
-    # 清除已設定課程代碼
-    show_course_info = tk.Button(window, text="清除已設定課程代碼", width=10, height=2, command=clear_course_list)
     show_course_info.grid(column=1, row=6, sticky="nsew", padx=(0, paddingx), pady=5)
-
 
 
     # 建立驗證規則
@@ -310,7 +332,7 @@ if __name__ == '__main__':
     millsec.grid(column=5, row=1, sticky="nsew")
     millsec_label.grid(column=6, row=1, sticky="nsew",padx=10)
 
-    # 搶課
+    # 開始搶課
     open_browser = tk.Button(window, text="開始搶課", height=2, command=ClickHandler)
     open_browser.grid(column=0, row=8, sticky="nsew", columnspan=3, padx=paddingx, pady=(5, 18))
 
