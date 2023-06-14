@@ -1,7 +1,5 @@
 import tkinter as tk
 import function
-import numpy as np
-import json
 from tkinter import messagebox
 
 
@@ -13,25 +11,25 @@ def update_account():
     # 如果內文不為空白則更新
     if not (len(New_Std_ID) == 0 or len(New_Password) == 0):
         function.update_account_data(New_Std_ID, New_Password)
-        messagebox.showinfo('通知', '帳號密碼更新成功',parent=window)
+        messagebox.showinfo('通知', '帳號密碼更新成功')
     else:
         # 清除內文
         std_ID.delete(0, tk.END)
         password.delete(0, tk.END)
-        messagebox.showwarning('錯誤', '帳號或密碼不能為空',parent=window)
+        messagebox.showinfo('錯誤', '帳號或密碼不能為空')
 
 # 確認帳號密碼
 def check_account():
     std_ID, password = function.get_account()
     if(std_ID and password):
-        messagebox.showinfo('帳號密碼確認', '學號 : ' + std_ID + '\n帳號 : ' + password,parent=window)
+        messagebox.showinfo('帳號密碼確認', '學號 : ' + std_ID + '\n帳號 : ' + password)
     else:
-        messagebox.showwarning('帳號密碼確認', '帳號密碼尚未設定',parent=window)
+        messagebox.showinfo('帳號密碼確認', '帳號密碼尚未設定')
     
 
 # 清除帳號密碼資訊並移除查看功能
 def clear_check_btn():
-    result = messagebox.askquestion("確認", "是否要執行此操作？\n清除後就無法看到個人資訊",parent=window)
+    result = messagebox.askquestion("確認", "是否要執行此操作？\n清除後就無法看到個人資訊")
     if result == 'yes':
         # 移除查看功能
         check_btn.destroy()
@@ -49,9 +47,9 @@ def clear_input_field():
     if not (len(New_Std_ID) == 0 and len(New_Password) == 0):
         std_ID.delete(0, tk.END)
         password.delete(0, tk.END)
-        messagebox.showinfo('通知', '空格已清空',parent=window)
+        messagebox.showinfo('通知', '空格已清空')
     else:
-        messagebox.showwarning('錯誤', '帳號或密碼空格為空',parent=window)
+        messagebox.showinfo('錯誤', '帳號或密碼空格為空')
 
 # 切換密碼顯示方式
 def show_password():
@@ -62,84 +60,6 @@ def show_password():
     else:
         password.config(show = "*")
 
-# 更新欲搶課程代碼
-def update_course():
-    # 取得課程代碼
-    Course = [course1.get(), course2.get(), course3.get(), course4.get()]
-    if(not (len(Course[0])) and not (len(Course[1])) and not (len(Course[2])) and not (len(Course[3]))):
-        messagebox.showwarning('錯誤', '四個欄位不能皆為空格',parent=window)
-    else:
-        # 檢查陣列元素是否有空白，若有空白則將後面的元素往前移
-        for j in range(2):
-            for i in range(len(Course) - 1):
-                if len(Course[i]) == 0:
-                    Course[i] = Course[i+1]
-                    Course[i+1] = ''
-        
-        # 更新 Entry 欄位的文字
-        course1.delete(0, tk.END)
-        course2.delete(0, tk.END)
-        course3.delete(0, tk.END)
-        course4.delete(0, tk.END)
-        course1.insert(0, Course[0])
-        course2.insert(0, Course[1])
-        course3.insert(0, Course[2])
-        course4.insert(0, Course[3])
-
-        function.update_courser_info(Course[0], Course[1], Course[2], Course[3])
-        messagebox.showinfo('通知', '課程送出成功',parent=window)
-
-# 顯示目前設定課程代碼
-def show_course_info():
-    # 設定課程數量
-    course_count = 4
-    Course = function.get_current_course()
-    for i in range(len(Course)):
-        if(not Course[i]):
-            course_count -= 1
-
-    if course_count == 0:
-        messagebox.showwarning('錯誤', '目前未設定課程代碼',parent=window)
-    else:
-        if (course_count == 4):
-            messagebox.showinfo('通知', '課程一 : {}\n課程二 : {}\n課程三 : {}\n課程四 : {}'.format(Course[0],Course[1],Course[2],Course[3]))
-        elif (course_count == 3):
-            messagebox.showinfo('通知', '課程一 : {}\n課程二 : {}\n課程三 : {}'.format(Course[0],Course[1],Course[2]))
-        elif (course_count == 2):
-            messagebox.showinfo('通知', '課程一 : {}\n課程二 : {}'.format(Course[0],Course[1]))
-        elif(course_count == 1):
-            messagebox.showinfo('通知', '課程一 : {}'.format(Course[0]))
-
-# 清除課程代碼
-def clear_course_info():
-    course1.delete(0, tk.END)
-    course2.delete(0, tk.END)
-    course3.delete(0, tk.END)
-    course4.delete(0, tk.END)
-
-# 清除 Json 格式中的目標課程清單
-def clear_course_list():
-    result = messagebox.askquestion("清除課程", "是否要執行此操作？",parent=window)
-    if result == 'yes':
-        with open("./data/course.json", 'r+') as file:
-            data = json.load(file)
-            # 更新 JSON 檔案中的帳號和密碼
-            data["course_ID1"] = ""
-            data["course_ID2"] = ""
-            data["course_ID3"] = ""
-            data["course_ID4"] = ""
-
-            # 將更新後的資料寫回 JSON 檔案
-            file.seek(0)  # 移動回檔案開頭
-            json.dump(data, file, indent=4)
-            file.truncate()  # 截斷檔案，移除舊資料
-        messagebox.showinfo('通知', '課程已清除',parent=window)
-        print("課程已清除")
-    else:
-        # 取消操作的處理
-        print("取消操作")
-    
-
 
 # 主程式
 if __name__ == '__main__':
@@ -148,7 +68,6 @@ if __name__ == '__main__':
     window = tk.Tk()
     window.title('逢甲大學搶課系統')
     window.resizable(False, False)
-    
 
     # 設定按鈕相同寬度
     window.columnconfigure(0, weight=1)
@@ -198,54 +117,9 @@ if __name__ == '__main__':
     clear_btn = tk.Button(window, text="移除查看功能", width=10, height=2, command=clear_check_btn)
     clear_btn.grid(column=1, row=3, sticky="nsew", padx=(0, paddingx), pady=5)
 
-
-    # 輸入所選課程
-    course_label = tk.LabelFrame(window, text='輸入預搶課程代碼', padx=15, pady=15)
-    course_label.grid(column=0, row=4, columnspan=3, ipadx=5, ipady=5, padx=paddingx, pady=(18, 5))
-
-    # 課程一
-    course1_label = tk.Label(course_label, text='課程1 : ')
-    course1 = tk.Entry(course_label, show="")
-    course1_label.grid(column=1, row=1, sticky="nsew", pady=5)
-    course1.grid(column=2, row=1, sticky="nsew", pady=5)
-
-    # 課程二
-    course2_label = tk.Label(course_label, text='課程2 : ')
-    course2 = tk.Entry(course_label, show="")
-    course2_label.grid(column=3, row=1, sticky="nsew", pady=5)
-    course2.grid(column=4, row=1, sticky="nsew", pady=5)
-
-    # 課程三
-    course3_label = tk.Label(course_label, text='課程3 : ')
-    course3 = tk.Entry(course_label, show="")
-    course3_label.grid(column=1, row=2, sticky="nsew", pady=5)
-    course3.grid(column=2, row=2, sticky="nsew", pady=5)
-
-    # 課程四
-    course4_label = tk.Label(course_label, text='課程4 : ')
-    course4 = tk.Entry(course_label, show="")
-    course4_label.grid(column=3, row=2, sticky="nsew", pady=5)
-    course4.grid(column=4, row=2, sticky="nsew", pady=5)
-
-    # 送出課程代碼
-    submit_course = tk.Button(window, text="送出課程代碼", width=10, height=2, command=update_course)
-    submit_course.grid(column=0, row=5, sticky="nsew", padx=(paddingx, 20), pady=5)
-
-    # 顯示已設定課程代碼
-    show_course_info = tk.Button(window, text="顯示已設定課程代碼", width=10, height=2, command=show_course_info)
-    show_course_info.grid(column=1, row=5, sticky="nsew", padx=(0, paddingx), pady=5)
-
-    # 清除空格代碼
-    submit_course = tk.Button(window, text="清除空格代碼", width=10, height=2, command=clear_course_info)
-    submit_course.grid(column=0, row=6, sticky="nsew", padx=(paddingx, 20), pady=5)
-
-    # 清除已設定課程代碼
-    show_course_info = tk.Button(window, text="清除已設定課程代碼", width=10, height=2, command=clear_course_list)
-    show_course_info.grid(column=1, row=6, sticky="nsew", padx=(0, paddingx), pady=5)
-
-    # 搶課
+    # 開啟網頁並登入
     open_browser = tk.Button(window, text="開始搶課", height=2, command=function.Browser)
-    open_browser.grid(column=0, row=7, sticky="nsew", columnspan=3, padx=paddingx, pady=(5, 18))
+    open_browser.grid(column=0, row=4, sticky="nsew", columnspan=3, padx=paddingx, pady=(5, 18))
 
     
     # 持續執行 mainloop
