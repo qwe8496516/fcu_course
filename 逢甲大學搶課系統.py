@@ -4,6 +4,7 @@ import numpy as np
 import json
 from tkinter import messagebox
 
+# 用 pyinstaller 打包的時候要複製 ddddocr 套件到 dist 的資料夾下面
 
 # 更新帳號密碼
 def update_account():
