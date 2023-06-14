@@ -2,6 +2,7 @@ from selenium import webdriver
 import logging
 import ddddocr
 import json
+from time import sleep
 
 
 # 透過 ddddocr 解析驗證碼
@@ -43,13 +44,58 @@ def Login(browser):
     browser.find_element_by_id('ctl00_Login1_vcode').send_keys(res)
     browser.find_element_by_id('ctl00_Login1_LoginButton').click()
 
+# 開始搶課
+def rob(browser,click_interval):    
+    # 取得課程代號列表
+    Course_List = get_current_course()
+
+    # 檢查課程是否有餘額
+    while len(Course_List):
+        # 餘額數量
+        remainValue=0
+        # ------------------------------------------------------------------------------------------ 未知
+        try:
+            browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_Label3').click()
+            browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_tbSubID').send_keys(Course_List[len(Course_List)-1])
+            browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_gvToAdd"]/tbody/tr[2]/td[8]/input').click()
+            
+            # 控制點擊時長
+            sleep(click_interval)
+
+            # 從資訊中取得目前餘額 / 開放名額
+            alert = browser.switch_to_alert()
+            alertInfo = alert.text
+            remainValue = int(alertInfo[10:13].strip())
+            originValue = int(alertInfo[14:18].strip())
+            alert.accept()
+            print('目前餘額 : ', remainValue)
+            print('開放名額 : ', originValue)
+        except:
+            print('',end='')
+            
+        # 執行選課功能  
+        if(remainValue > 0):
+            try:
+                # 點擊該課程加選按鈕
+                browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_gvToAdd/tbody/tr[2]/td[1]/input').click()
+                if browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock/span').text.find('加選成功') != -1:
+                    print(browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock/span').text)
+                    Course_List.remove(Course_List[len(Course_List)-1])
+                else:
+                    print(browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock/span').text)
+            except:
+                print('',end='')      
+        
+        browser.get(browser.current_url)
+
 
 # 透過 webdriver 開啟瀏覽器
-def Browser():
+def Browser(click_interval):
     browser = webdriver.Chrome()
     browser.get('https://course.fcu.edu.tw/')
     browser.maximize_window()
     Login(browser)
+    rob(browser,click_interval)
 
 
 # 更新 Json 檔案中的學號、密碼
@@ -72,3 +118,26 @@ def get_account():
     with open("./data/account.json", 'r') as file:
         data = json.load(file)
         return data["std_ID"],data["password"]
+
+
+def update_courser_info(course_ID1, course_ID2, course_ID3, course_ID4):
+    with open("./data/course.json", 'r+') as file:
+        data = json.load(file)
+
+        # 更新 JSON 檔案中的帳號和密碼
+        data["course_ID1"] = course_ID1
+        data["course_ID2"] = course_ID2
+        data["course_ID3"] = course_ID3
+        data["course_ID4"] = course_ID4
+
+        # 將更新後的資料寫回 JSON 檔案
+        file.seek(0)  # 移動回檔案開頭
+        json.dump(data, file, indent=4)
+        file.truncate()  # 截斷檔案，移除舊資料
+
+# 取得目前設定的課程代碼資訊
+def get_current_course():
+    with open("./data/course.json", 'r') as file:
+        data = json.load(file)
+        course_list = [data["course_ID1"],data["course_ID2"],data["course_ID3"],data["course_ID4"]]
+        return course_list
