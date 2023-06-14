@@ -1,6 +1,6 @@
 # fcu_course
 
-![專案封面圖](https://fakeimg.pl/500/)
+![image](https://github.com/qwe8496516/fcu_course/assets/92380307/40b3b267-777f-4509-aeea-bb9a986f78bf = 60%)
 
 > 此系統是一種用於自動搶課的程序，旨在幫助學生在選課系統開放時盡選到所需的課程。
 
