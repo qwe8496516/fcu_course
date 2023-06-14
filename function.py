@@ -44,6 +44,7 @@ def Login(browser):
     browser.find_element_by_id('ctl00_Login1_vcode').send_keys(res)
     browser.find_element_by_id('ctl00_Login1_LoginButton').click()
 
+
 # 開始搶課
 def rob(browser,click_interval):    
     # 取得課程代號列表
@@ -95,6 +96,7 @@ def Browser(click_interval):
     browser.get('https://course.fcu.edu.tw/')
     browser.maximize_window()
     Login(browser)
+    print(click_interval)
     rob(browser,click_interval)
 
 
@@ -120,6 +122,7 @@ def get_account():
         return data["std_ID"],data["password"]
 
 
+# 更新課程代碼
 def update_courser_info(course_ID1, course_ID2, course_ID3, course_ID4):
     with open("./data/course.json", 'r+') as file:
         data = json.load(file)
@@ -134,6 +137,7 @@ def update_courser_info(course_ID1, course_ID2, course_ID3, course_ID4):
         file.seek(0)  # 移動回檔案開頭
         json.dump(data, file, indent=4)
         file.truncate()  # 截斷檔案，移除舊資料
+
 
 # 取得目前設定的課程代碼資訊
 def get_current_course():

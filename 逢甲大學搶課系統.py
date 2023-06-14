@@ -28,7 +28,6 @@ def check_account():
     else:
         messagebox.showwarning('帳號密碼確認', '帳號密碼尚未設定',parent=window)
     
-
 # 清除帳號密碼資訊並移除查看功能
 def clear_check_btn():
     result = messagebox.askquestion("確認", "是否要執行此操作？\n清除後就無法看到個人資訊",parent=window)
@@ -97,7 +96,7 @@ def show_course_info():
     for i in range(len(Course)):
         if(not Course[i]):
             course_count -= 1
-
+    # 顯示課程數量
     if course_count == 0:
         messagebox.showwarning('錯誤', '目前未設定課程代碼',parent=window)
     else:
@@ -138,8 +137,42 @@ def clear_course_list():
     else:
         # 取消操作的處理
         print("取消操作")
-    
 
+# 抓取Click的頻率
+def ClickHandler():
+    # 取得點擊頻率 分鐘 / 秒 / 微秒
+    mins_value = int(mins.get())
+    sec_value = int(sec.get())
+    millsec_value = int(millsec.get())
+    frequency = mins_value*60 + sec_value + 0.01*millsec_value
+    # 錯誤頻率偵測
+    if(frequency <= 0):
+        messagebox.showwarning('錯誤', '請先設定點擊頻率',parent=window)
+    else:
+        function.Browser(frequency)
+
+# 檢查課程輸入規則
+def course_validate_input(text):
+    # 檢查輸入長度是否超過指定值 && 只包含數字
+    if (len(text) <= 4 and (text.isdigit() or text == '')):
+        return True
+    else:
+        if(not text.isdigit()):
+            messagebox.showwarning('錯誤', '課程代碼必須為數字',parent=window)
+        return False
+    
+# 檢查點擊頻率輸入規則
+def click_validate_input(text):
+    # 檢查輸入數字為正數
+    if (text.isdigit()):
+        return True
+    else:
+        if(text == ''):
+            messagebox.showwarning('錯誤', '時間不得為空',parent=window)
+        else:
+            messagebox.showwarning('錯誤', '時間必須為數字',parent=window)
+        return False
+    
 
 # 主程式
 if __name__ == '__main__':
@@ -148,7 +181,7 @@ if __name__ == '__main__':
     window = tk.Tk()
     window.title('逢甲大學搶課系統')
     window.resizable(False, False)
-    
+    window.geometry('+0+0')
 
     # 設定按鈕相同寬度
     window.columnconfigure(0, weight=1)
@@ -199,31 +232,35 @@ if __name__ == '__main__':
     clear_btn.grid(column=1, row=3, sticky="nsew", padx=(0, paddingx), pady=5)
 
 
+
+    # 建立驗證規則
+    validation = window.register(course_validate_input)
+
     # 輸入所選課程
     course_label = tk.LabelFrame(window, text='輸入預搶課程代碼', padx=15, pady=15)
     course_label.grid(column=0, row=4, columnspan=3, ipadx=5, ipady=5, padx=paddingx, pady=(18, 5))
 
     # 課程一
     course1_label = tk.Label(course_label, text='課程1 : ')
-    course1 = tk.Entry(course_label, show="")
+    course1 = tk.Entry(course_label, validate="key", validatecommand=(validation, '%P'), show="")
     course1_label.grid(column=1, row=1, sticky="nsew", pady=5)
     course1.grid(column=2, row=1, sticky="nsew", pady=5)
 
     # 課程二
     course2_label = tk.Label(course_label, text='課程2 : ')
-    course2 = tk.Entry(course_label, show="")
+    course2 = tk.Entry(course_label, validate="key", validatecommand=(validation, '%P'), show="")
     course2_label.grid(column=3, row=1, sticky="nsew", pady=5)
     course2.grid(column=4, row=1, sticky="nsew", pady=5)
 
     # 課程三
     course3_label = tk.Label(course_label, text='課程3 : ')
-    course3 = tk.Entry(course_label, show="")
+    course3 = tk.Entry(course_label, validate="key", validatecommand=(validation, '%P'), show="")
     course3_label.grid(column=1, row=2, sticky="nsew", pady=5)
     course3.grid(column=2, row=2, sticky="nsew", pady=5)
 
     # 課程四
     course4_label = tk.Label(course_label, text='課程4 : ')
-    course4 = tk.Entry(course_label, show="")
+    course4 = tk.Entry(course_label, validate="key", validatecommand=(validation, '%P'), show="")
     course4_label.grid(column=3, row=2, sticky="nsew", pady=5)
     course4.grid(column=4, row=2, sticky="nsew", pady=5)
 
@@ -243,10 +280,39 @@ if __name__ == '__main__':
     show_course_info = tk.Button(window, text="清除已設定課程代碼", width=10, height=2, command=clear_course_list)
     show_course_info.grid(column=1, row=6, sticky="nsew", padx=(0, paddingx), pady=5)
 
-    # 搶課
-    open_browser = tk.Button(window, text="開始搶課", height=2, command=function.Browser)
-    open_browser.grid(column=0, row=7, sticky="nsew", columnspan=3, padx=paddingx, pady=(5, 18))
 
+
+    # 建立驗證規則
+    validation2 = window.register(click_validate_input)
+
+    # 調整點擊速度
+    ClickInterval = tk.LabelFrame(window, text='Click Interval', padx=15, pady=15)
+    ClickInterval.grid(column=0, row=7, columnspan=3, ipadx=5, ipady=5, padx=paddingx, pady=(18, 5))
+
+    # 分鐘
+    mins = tk.Entry(ClickInterval,width=10, validate="key", validatecommand=(validation2, '%P'), show="")
+    mins_label = tk.Label(ClickInterval, text='mins')
+    mins.insert(0, "0")
+    mins.grid(column=1, row=1, sticky="nsew")
+    mins_label.grid(column=2, row=1, sticky="nsew",padx=10)
     
+    # 秒
+    sec = tk.Entry(ClickInterval,width=10, validate="key", validatecommand=(validation2, '%P'), show="")
+    sec_label = tk.Label(ClickInterval, text='sec')
+    sec.insert(0, "3")
+    sec.grid(column=3, row=1, sticky="nsew")
+    sec_label.grid(column=4, row=1, sticky="nsew",padx=10)
+
+    # 微秒
+    millsec = tk.Entry(ClickInterval,width=10, validate="key", validatecommand=(validation2, '%P'), show="")
+    millsec_label = tk.Label(ClickInterval, text='millisec')
+    millsec.insert(0, "0")
+    millsec.grid(column=5, row=1, sticky="nsew")
+    millsec_label.grid(column=6, row=1, sticky="nsew",padx=10)
+
+    # 搶課
+    open_browser = tk.Button(window, text="開始搶課", height=2, command=ClickHandler)
+    open_browser.grid(column=0, row=8, sticky="nsew", columnspan=3, padx=paddingx, pady=(5, 18))
+
     # 持續執行 mainloop
     window.mainloop()
