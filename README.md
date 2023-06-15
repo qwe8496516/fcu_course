@@ -13,8 +13,26 @@
 密碼： 123456789
 ```
 
+設置課程代碼 **（順序即為志願序，輸入格式為四位「數字」，請自行至課程檢索系統確認課程是否存在）**
+
+```bash
+課程1 : 2154
+課程2 : 2641
+課程3 : 0001
+課程4 : 8624
+```
+
+設置點擊頻率 **（分別輸入分鐘/秒/毫秒，空格欄內不得為空或負數）**
+
+```bash
+mins : 0
+sec : 3
+millisec : 0
+```
+
 - [x] 自動登入
-- [x] 自行選擇課程
+- [x] 課成代碼設定
+- [x] 設置點擊速度
 
 ...
 
@@ -29,20 +47,26 @@
 
 ## 安裝
 
-> 請務必依據你的專案來調整內容。
+> 點擊上方的「<> Code」選項 -> 並點選 Download ZIP 以便下載完整檔案
 
 以下將會引導你如何安裝此專案到你的電腦上。
 
-Node.js 版本建議為：`16.15.0` 以上...
+Chromedriver 版本建議為：與您的瀏覽器相同版本
+至 Chrome 設定 -> 關於Chrome 即可看到版本資訊
+假設您的版本為114.0.5735.110 ，則請至下方連結下載114版本
+
+```
+https://chromedriver.chromium.org/downloads
+```
 
 
 ## 資料夾說明
 
 - data - 所需資料放置處 (學號密碼 / 課程代號 / 功能說明)
 - image - 驗證碼放置處
-- funtion.py 搶課功能
-- 逢甲大學搶課系統.py GUI介面
-...
+- funtion.py - 搶課功能
+- 逢甲大學搶課系統.py - GUI介面
+
 
 
 ## 專案技術
@@ -51,15 +75,12 @@ Node.js 版本建議為：`16.15.0` 以上...
 - ddddocr
 - tkinter   
 - selenium
-- Chromedriver v
-...
 
 
 ## 聯絡作者
 
-你可以透過以下方式與我聯絡
+可以透過以下方式與我聯絡以提供改善功能
 
-- [部落格](https://israynotarray.com/)
-- [Facebook](https://www.facebook.com/israynotarray)
-- [Instagram](https://www.instagram.com/isray_notarray/)
+- [Github](https://github.com/qwe8496516/)
+- [Instagram](https://www.instagram.com/gannagui__2001/)
 ...
