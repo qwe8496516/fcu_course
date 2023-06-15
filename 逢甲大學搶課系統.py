@@ -173,22 +173,28 @@ def click_validate_input(text):
         else:
             messagebox.showwarning('錯誤', '時間必須為數字',parent=window)
         return False
-
+    
 # 顯示幫助資訊
 def show_help():
     window2 = tk.Tk()
     window2.title('幫助')
     window2.resizable(False, False)
     window2.geometry('450x580+600+0')
+    
     help_info = ""
     line = "------------------------------------------------------------------------"
+    
+    # 讀取 function.json 的功能說明
     with open('./data/function.json', 'rb') as file:
         help_data = json.load(file)
+        
         for func in help_data:
             help_info += "\n" + func + "\n{}\n".format(line)
             account_data = help_data[func]
+            
             for key, value in account_data.items():
                 help_info += key + "-> " + value + "\n\n"
+            
             help_info += "\n"
 
     std_ID_label = tk.Label(window2, text=help_info, anchor=tk.W, justify=tk.LEFT, wraplength=400)
