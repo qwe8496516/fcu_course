@@ -4,6 +4,7 @@
 
 > 此系統是一種用於自動搶課的程序，旨在幫助學生在選課系統開放時盡選到所需的課程。
 
+
 ## 功能
 
 設置學號及密碼 **（請自行斟酌使用，建議設置好後使用「移除查看功能」避免有心人盜取學號密碼）**
@@ -59,6 +60,11 @@ Chromedriver 版本建議為：與您的瀏覽器相同版本
 https://chromedriver.chromium.org/downloads
 ```
 
+到資料夾路徑底下打開終端機輸入以下指令
+```bash
+pip install -r requirements.txt
+```
+
 
 ## 資料夾說明
 
@@ -68,13 +74,16 @@ https://chromedriver.chromium.org/downloads
 - 逢甲大學搶課系統.py - GUI介面
 
 
-
 ## 專案技術
 
 - Python v3.9.6
 - ddddocr
 - tkinter   
 - selenium
+
+### 環境需求
+
+- chromedriver
 
 
 ## 聯絡作者
