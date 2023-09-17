@@ -63,34 +63,47 @@ def rob(browser,click_interval):
             print(Course_List,len(Course_List))
 
             if (Course_List[0] == ""):
+                print("課程代碼已清空，結束程式")
                 break
 
             # 控制點擊時長
             browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_tbSubID').send_keys(Course_List[0])
             
-            browser.find_element_by_css_selector("#ctl00_MainContent_TabContainer1_tabSelected_gvToAdd tr:nth-child(2) td:first-child input").click()
 
-            # 從資訊中取得目前餘額 / 開放名額
-            # alert = browser.switch_to_alert()
-            # alertInfo = alert.text
-            # remainValue = int(alertInfo[10:13].strip())
-            # originValue = int(alertInfo[14:18].strip())
-            # alert.accept()
-            # print('目前餘額 : ', remainValue)
-            # print('開放名額 : ', originValue)
+            if  browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').text  == "":
+                browser.find_element_by_css_selector("#ctl00_MainContent_TabContainer1_tabSelected_gvToAdd tr:nth-child(2) td:first-child input").click()
+
+                
+
+                # 從資訊中取得目前餘額 / 開放名額
+                # alert = browser.switch_to_alert()
+                # alertInfo = alert.text
+                # remainValue = int(alertInfo[10:13].strip())
+                # originValue = int(alertInfo[14:18].strip())
+                # alert.accept()
+                # print('目前餘額 : ', remainValue)
+                # print('開放名額 : ', originValue)
 
 
-            if browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').find_element_by_tag_name('span').text == '加選成功':
+                if browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').find_element_by_tag_name('span').text == '加選成功':
+                    print(browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').find_element_by_tag_name('span').text)
+                    remove_current_course()
+                else:
+                    print(browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').find_element_by_tag_name('span').text)
+
+
+                
+            elif browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').find_element_by_tag_name('span').text == '上課時間與其他課程衝堂':
                 print(browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').find_element_by_tag_name('span').text)
                 remove_current_course()
-            else:
+            elif browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').find_element_by_tag_name('span').text == '本科目不開放網路選課':
                 print(browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').find_element_by_tag_name('span').text)
-
+                remove_current_course()
 
             sleep(click_interval)
     except:
         print('',end='')
-        
+            
     # 執行選課功能  
     # if(remainValue > 0):
     #     try:
