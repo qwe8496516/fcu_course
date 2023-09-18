@@ -32,10 +32,11 @@ millisec : 0
 ```
 
 - [x] 自動登入
-- [x] 課成代碼設定
-- [x] 設置點擊速度
+- [x] 課程代碼設定
+- [x] 設置平均點擊速度
 
 > 請記得設置學號及密碼和課程代碼必須送出才有效
+
 > 如有任何問題請先點選 Help 查看
 
 ## 安裝
@@ -51,8 +52,9 @@ Chromedriver 版本建議為：與您的瀏覽器相同版本
 ```
 https://chromedriver.chromium.org/downloads
 ```
-
 > chromedriver.exe下載完成後將其放置於 / fcu_course-main / dist / fcu / chromedriver.exe 路徑底下
+
+<br>
 
 到資料夾fcu_course-main底下的dist路徑底下點擊 fcu.exe 即可使用
 ```bash
@@ -63,7 +65,7 @@ https://chromedriver.chromium.org/downloads
 
 - data - 所需資料放置處 (學號密碼 / 課程代號 / 功能說明)
 - image - 驗證碼放置處
-- dist - 打包好的.exe檔
+- dist - 打包好的執行檔和套件
 - funtion.py - 搶課功能
 - 逢甲大學搶課系統.py - GUI介面
 
