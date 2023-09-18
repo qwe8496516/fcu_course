@@ -35,16 +35,7 @@ millisec : 0
 - [x] 課成代碼設定
 - [x] 設置點擊速度
 
-...
-
-## 畫面
-
-> 可提供 1~3 張圖片，讓觀看者透過 README 了解整體畫面
-
-![範例圖片 1](https://fakeimg.pl/500/)
-![範例圖片 2](https://fakeimg.pl/500/)
-![範例圖片 3](https://fakeimg.pl/500/)
-
+> 請記得設置學號及密碼和課程代碼必須送出才有效
 
 ## 安裝
 
@@ -65,6 +56,7 @@ https://chromedriver.chromium.org/downloads
 pip install -r requirements.txt
 ```
 
+> 下載完成後點擊「逢甲大學搶課系統.py」檔案
 
 ## 資料夾說明
 
