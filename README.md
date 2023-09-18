@@ -51,17 +51,18 @@ Chromedriver 版本建議為：與您的瀏覽器相同版本
 https://chromedriver.chromium.org/downloads
 ```
 
-到資料夾路徑底下打開終端機輸入以下指令
-```bash
-pip install -r requirements.txt
-```
+> chromedriver.exe下載完成後將其放置於 / fcu_course-main / dist / fcu / chromedriver.exe 路徑底下
 
-> 下載完成後點擊「逢甲大學搶課系統.py」檔案
+到資料夾fcu_course-main底下的dist路徑底下點擊 fcu.exe 即可使用
+```bash
+> fcu_course-main > dist > fcu > fcu.exe 
+```
 
 ## 資料夾說明
 
 - data - 所需資料放置處 (學號密碼 / 課程代號 / 功能說明)
 - image - 驗證碼放置處
+- dist - 打包好的.exe檔
 - funtion.py - 搶課功能
 - 逢甲大學搶課系統.py - GUI介面
 
