@@ -48,10 +48,6 @@ def Login(browser):
 
 # 開始搶課
 def rob(browser,click_interval):    
-    # 檢查課程是否有餘額
-    
-    # 餘額數量
-    remainValue=0
     # ------------------------------------------------------------------------------------------ 未知
     try:
         browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_Label3').click()
@@ -65,59 +61,48 @@ def rob(browser,click_interval):
             if (Course_List[0] == ""):
                 print("課程代碼已清空，結束程式")
                 break
-
-            # 控制點擊時長
-            browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_tbSubID').send_keys(Course_List[0])
             
+            browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_tbSubID').send_keys(Course_List[0])
+        
+            try:
 
-            if  browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').text  == "":
-                browser.find_element_by_css_selector("#ctl00_MainContent_TabContainer1_tabSelected_gvToAdd tr:nth-child(2) td:first-child input").click()
+                # 取得課程資訊
+                table_text= browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_PanelTop').text
 
-                
+                # 判斷是否加選
+                if '退選' in table_text:
+                    table_id = 'ctl00_MainContent_TabContainer1_tabSelected_gvToDel'
+                else:
+                    table_id = 'ctl00_MainContent_TabContainer1_tabSelected_gvToAdd'
 
-                # 從資訊中取得目前餘額 / 開放名額
-                # alert = browser.switch_to_alert()
-                # alertInfo = alert.text
-                # remainValue = int(alertInfo[10:13].strip())
-                # originValue = int(alertInfo[14:18].strip())
-                # alert.accept()
-                # print('目前餘額 : ', remainValue)
-                # print('開放名額 : ', originValue)
-
-
-                if browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').find_element_by_tag_name('span').text == '加選成功':
+                if  browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').text == "":
+                    # 如果 table_id 為 Add 則點擊加選按鈕
+                    if (table_id == 'ctl00_MainContent_TabContainer1_tabSelected_gvToAdd'):
+                        browser.find_element_by_css_selector("#ctl00_MainContent_TabContainer1_tabSelected_gvToAdd tr:nth-child(2) td:first-child input").click()
+                        if browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').find_element_by_tag_name('span').text == '加選成功':
+                            print(browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').find_element_by_tag_name('span').text)
+                            remove_current_course()
+                        else:
+                            print(browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').find_element_by_tag_name('span').text)
+                    # 代表已加選該課程要移除課程代碼
+                    else:
+                        remove_current_course()
+                # 上課時間與其他課程衝堂
+                elif browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').find_element_by_tag_name('span').text == '上課時間與其他課程衝堂':
                     print(browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').find_element_by_tag_name('span').text)
                     remove_current_course()
-                else:
+                # 本科目不開放網路選課
+                elif browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').find_element_by_tag_name('span').text == '本科目不開放網路選課':
                     print(browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').find_element_by_tag_name('span').text)
+                    remove_current_course()
+            except:
+                print('Error',end='')
 
-
-                
-            elif browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').find_element_by_tag_name('span').text == '上課時間與其他課程衝堂':
-                print(browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').find_element_by_tag_name('span').text)
-                remove_current_course()
-            elif browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').find_element_by_tag_name('span').text == '本科目不開放網路選課':
-                print(browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').find_element_by_tag_name('span').text)
-                remove_current_course()
-
+            # 控制點擊時長
             sleep(click_interval)
     except:
         print('',end='')
             
-    # 執行選課功能  
-    # if(remainValue > 0):
-    #     try:
-    #         # 點擊該課程加選按鈕
-    #         browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_gvToAdd/tbody/tr[2]/td[1]/input').click()
-    #         if browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock/span').text.find('加選成功') != -1:
-    #             print(browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock/span').text)
-    #             Course_List.remove(Course_List[len(Course_List)-1])
-    #         else:
-    #             print(browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock/span').text)
-    #     except:
-    #         print('',end='')      
-    
-    # browser.get(browser.current_url)
 
 
 # 透過 webdriver 開啟瀏覽器
@@ -183,13 +168,15 @@ def remove_current_course():
     with open("./data/course.json", 'r+') as file:
         data = json.load(file)
 
-        # 將 course_ID4 的值設為空
-        data["course_ID4"] = ""
+        # 將 course_ID1 的值設為空
+        data["course_ID1"] = ""
 
         # 依次將值往後移
         data["course_ID1"] = data["course_ID2"]
         data["course_ID2"] = data["course_ID3"]
         data["course_ID3"] = data["course_ID4"]
+
+        data["course_ID4"] = ""
         # 寫入修改後的 JSON 資料到檔案
         with open("./data/course.json", 'w') as file:
             json.dump(data, file, indent=4)
