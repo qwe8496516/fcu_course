@@ -7,19 +7,22 @@ from tkinter import messagebox
 # 用 pyinstaller 打包的時候要複製 ddddocr 套件到 dist 的資料夾下面
 
 # 更新帳號密碼
-def update_account():
+def update_account(showInfo = True):
     # 取得 std_ID , password
     New_Std_ID = std_ID.get()
     New_Password = password.get()
     # 如果內文不為空白則更新
     if not (len(New_Std_ID) == 0 or len(New_Password) == 0):
         function.update_account_data(New_Std_ID, New_Password)
-        messagebox.showinfo('通知', '帳號密碼更新成功',parent=window)
+        if (showInfo):
+            messagebox.showinfo('通知', '帳號密碼更新成功',parent=window)
+        return True
     else:
         # 清除內文
         std_ID.delete(0, tk.END)
         password.delete(0, tk.END)
         messagebox.showwarning('錯誤', '帳號或密碼不能為空',parent=window)
+        return False
 
 # 確認帳號密碼
 def check_account():
@@ -63,14 +66,15 @@ def show_password():
         password.config(show = "*")
 
 # 更新欲搶課程代碼
-def update_course():
+def update_course(showInfo = True):
     # 取得課程代碼
-    Course = [course1.get(), course2.get(), course3.get(), course4.get()]
-    if(not (len(Course[0])) and not (len(Course[1])) and not (len(Course[2])) and not (len(Course[3]))):
-        messagebox.showwarning('錯誤', '四個欄位不能皆為空格',parent=window)
+    Course = [course1.get(), course2.get(), course3.get(), course4.get(), course5.get(), course6.get()]
+    if(not (len(Course[0])) and not (len(Course[1])) and not (len(Course[2])) and not (len(Course[3])) and not (len(Course[4])) and not (len(Course[5]))):
+        messagebox.showwarning('錯誤', '六個欄位不能皆為空格',parent=window)
+        return False
     else:
         # 檢查陣列元素是否有空白，若有空白則將後面的元素往前移
-        for j in range(2):
+        for j in range(6):
             for i in range(len(Course) - 1):
                 if len(Course[i]) == 0:
                     Course[i] = Course[i+1]
@@ -81,19 +85,26 @@ def update_course():
         course2.delete(0, tk.END)
         course3.delete(0, tk.END)
         course4.delete(0, tk.END)
+        course5.delete(0, tk.END)
+        course6.delete(0, tk.END)
         course1.insert(0, Course[0])
         course2.insert(0, Course[1])
         course3.insert(0, Course[2])
         course4.insert(0, Course[3])
+        course5.insert(0, Course[4])
+        course6.insert(0, Course[5])
 
-        function.update_courser_info(Course[0], Course[1], Course[2], Course[3])
-        messagebox.showinfo('通知', '課程送出成功',parent=window)
+        function.update_courser_info(Course[0], Course[1], Course[2], Course[3], Course[4], Course[5])
+        if (showInfo):
+            messagebox.showinfo('通知', '課程代碼更新成功',parent=window)
+        return True
 
 # 顯示目前設定課程代碼
 def show_course_info():
     # 設定課程數量
-    course_count = 4
+    course_count = 6
     Course = function.get_current_course()
+    print(Course)
     for i in range(len(Course)):
         if(not Course[i]):
             course_count -= 1
@@ -101,7 +112,11 @@ def show_course_info():
     if course_count == 0:
         messagebox.showwarning('錯誤', '目前未設定課程代碼',parent=window)
     else:
-        if (course_count == 4):
+        if (course_count == 6):
+            messagebox.showinfo('通知', '課程一 : {}\n課程二 : {}\n課程三 : {}\n課程四 : {}\n課程五 : {}\n課程六 : {}'.format(Course[0],Course[1],Course[2],Course[3],Course[4],Course[5]))
+        elif (course_count == 5):
+            messagebox.showinfo('通知', '課程一 : {}\n課程二 : {}\n課程三 : {}\n課程四 : {}\n課程五 : {}'.format(Course[0],Course[1],Course[2],Course[3],Course[4]))
+        elif (course_count == 4):
             messagebox.showinfo('通知', '課程一 : {}\n課程二 : {}\n課程三 : {}\n課程四 : {}'.format(Course[0],Course[1],Course[2],Course[3]))
         elif (course_count == 3):
             messagebox.showinfo('通知', '課程一 : {}\n課程二 : {}\n課程三 : {}'.format(Course[0],Course[1],Course[2]))
@@ -116,6 +131,8 @@ def clear_course_info():
     course2.delete(0, tk.END)
     course3.delete(0, tk.END)
     course4.delete(0, tk.END)
+    course5.delete(0, tk.END)
+    course6.delete(0, tk.END)
 
 # 清除 Json 格式中的目標課程清單
 def clear_course_list():
@@ -128,6 +145,8 @@ def clear_course_list():
             data["course_ID2"] = ""
             data["course_ID3"] = ""
             data["course_ID4"] = ""
+            data["course_ID5"] = ""
+            data["course_ID6"] = ""
 
             # 將更新後的資料寫回 JSON 檔案
             file.seek(0)  # 移動回檔案開頭
@@ -150,7 +169,10 @@ def ClickHandler():
     if(frequency <= 0):
         messagebox.showwarning('錯誤', '請先設定點擊頻率',parent=window)
     else:
-        function.Browser(frequency)
+        if (update_account(False)):  # 帳號更新成功
+            if (update_course(False)):   # 課程更新成功   
+                messagebox.showinfo('通知', '設定成功',parent=window)
+                function.Browser(frequency)
 
 # 檢查課程輸入規則
 def course_validate_input(text):
@@ -201,8 +223,7 @@ def show_help():
     std_ID_label.pack()
 
     window2.mainloop()
-    
-    
+
 
 # 主程式
 if __name__ == '__main__':
@@ -293,6 +314,18 @@ if __name__ == '__main__':
     course4 = tk.Entry(course_label, validate="key", validatecommand=(validation, '%P'), show="")
     course4_label.grid(column=3, row=2, sticky="nsew", pady=5)
     course4.grid(column=4, row=2, sticky="nsew", pady=5)
+
+    # 課程五
+    course5_label = tk.Label(course_label, text='課程5 : ')
+    course5 = tk.Entry(course_label, validate="key", validatecommand=(validation, '%P'), show="")
+    course5_label.grid(column=1, row=3, sticky="nsew", pady=5)
+    course5.grid(column=2, row=3, sticky="nsew", pady=5)
+
+    # 課程六
+    course6_label = tk.Label(course_label, text='課程6 : ')
+    course6 = tk.Entry(course_label, validate="key", validatecommand=(validation, '%P'), show="")
+    course6_label.grid(column=3, row=3, sticky="nsew", pady=5)
+    course6.grid(column=4, row=3, sticky="nsew", pady=5)
 
     # 清除空格代碼
     clear_course_info = tk.Button(window, text="清除空格代碼", width=10, height=2, command=clear_course_info)

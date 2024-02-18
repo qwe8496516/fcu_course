@@ -74,6 +74,9 @@ def rob(browser,click_interval):
                     table_id = 'ctl00_MainContent_TabContainer1_tabSelected_gvToDel'
                 else:
                     table_id = 'ctl00_MainContent_TabContainer1_tabSelected_gvToAdd'
+                
+
+                print("test" + browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').text)
 
                 if  browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').text == "":
                     # 如果 table_id 為 Add 則點擊加選按鈕
@@ -83,7 +86,12 @@ def rob(browser,click_interval):
                             print(browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').find_element_by_tag_name('span').text)
                             remove_current_course()
                         else:
-                            print(browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').find_element_by_tag_name('span').text)
+                            # 超修學分數
+                            if browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').find_element_by_tag_name('span').text[2] == '超':
+                                print(browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').find_element_by_tag_name('span').text)
+                                remove_current_course()
+                            else:
+                                print(browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').find_element_by_tag_name('span').text)
                     # 代表已加選該課程要移除課程代碼
                     else:
                         remove_current_course()
@@ -95,8 +103,10 @@ def rob(browser,click_interval):
                 elif browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').find_element_by_tag_name('span').text == '本科目不開放網路選課':
                     print(browser.find_element_by_id('ctl00_MainContent_TabContainer1_tabSelected_lblMsgBlock').find_element_by_tag_name('span').text)
                     remove_current_course()
+
             except:
-                print('Error',end='')
+                browser.close()
+                Browser(click_interval)
 
             # 控制點擊時長
             sleep(click_interval)
@@ -138,7 +148,7 @@ def get_account():
 
 
 # 更新課程代碼
-def update_courser_info(course_ID1, course_ID2, course_ID3, course_ID4):
+def update_courser_info(course_ID1, course_ID2, course_ID3, course_ID4, course_ID5, course_ID6):
     with open("./data/course.json", 'r+') as file:
         data = json.load(file)
 
@@ -147,6 +157,8 @@ def update_courser_info(course_ID1, course_ID2, course_ID3, course_ID4):
         data["course_ID2"] = course_ID2
         data["course_ID3"] = course_ID3
         data["course_ID4"] = course_ID4
+        data["course_ID5"] = course_ID5
+        data["course_ID6"] = course_ID6
 
         # 將更新後的資料寫回 JSON 檔案
         file.seek(0)  # 移動回檔案開頭
@@ -158,7 +170,7 @@ def update_courser_info(course_ID1, course_ID2, course_ID3, course_ID4):
 def get_current_course():
     with open("./data/course.json", 'r') as file:
         data = json.load(file)
-        course_list = [data["course_ID1"],data["course_ID2"],data["course_ID3"],data["course_ID4"]]
+        course_list = [data["course_ID1"],data["course_ID2"],data["course_ID3"],data["course_ID4"],data["course_ID5"],data["course_ID6"]]
         return course_list
     
 
@@ -175,8 +187,10 @@ def remove_current_course():
         data["course_ID1"] = data["course_ID2"]
         data["course_ID2"] = data["course_ID3"]
         data["course_ID3"] = data["course_ID4"]
+        data["course_ID4"] = data["course_ID5"]
+        data["course_ID5"] = data["course_ID6"]
 
-        data["course_ID4"] = ""
+        data["course_ID6"] = ""
         # 寫入修改後的 JSON 資料到檔案
         with open("./data/course.json", 'w') as file:
             json.dump(data, file, indent=4)
